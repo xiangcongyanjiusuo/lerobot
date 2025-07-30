@@ -20,7 +20,7 @@ leader_arms:
     # _target_: lerobot.common.robot_devices.motors.feetech.FeetechMotorsBus
     # _target_: lerobot.common.robot_devices.motors.genki.GenkiMotorsBus
     _target_: lerobot.common.robot_devices.motors.gbot.GBotMotorsBus
-    port: com4
+    port: com8
     motors:
       # name: (index, model)
       shoulder_pan: [1, "genki_M1"]
@@ -33,7 +33,7 @@ leader_arms:
 follower_arms:
   main:
     _target_: lerobot.common.robot_devices.motors.feetech.FeetechMotorsBus
-    port: com3
+    port: com6
     motors:
       # name: (index, model)
       shoulder_pan: [1, "sts3215"]
