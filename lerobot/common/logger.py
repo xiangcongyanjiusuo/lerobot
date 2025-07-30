@@ -37,16 +37,72 @@ from lerobot.common.utils.utils import get_global_random_state, set_global_rando
 
 
 
-def create_symlink_or_copy(src, dst):
-    try:
-        os.symlink(src, dst)
-    except (AttributeError, OSError) as e:
-        # 如果 symlink 不可用或失败，则复制文件夹
-        print(f"Symlink failed with error '{e}', copying instead.")
-        if os.path.exists(dst):
-            shutil.rmtree(dst, ignore_errors=True)
-        shutil.copytree(src, dst)
+import os
+import shutil
+import logging
+from pathlib import Path
 
+# 建议在您的代码初始化部分设置日志记录器
+# 如果您已经有日志系统，可以忽略此行
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+def create_symlink_or_copy(src, dst):
+    """
+    尽最大努力创建从 src 到 dst 的符号链接，如果失败则回退到复制。
+    此函数被设计为“永不崩溃”，它会捕获并记录所有内部异常，而不会让它们中断程序执行。
+
+    健壮性逻辑：
+    1.  **前置检查**：验证源路径是否存在，如果不存在则记录错误并直接返回。
+    2.  **强制删除目标**：检查目标路径是否存在。如果存在，会先尝试将其彻底删除，为后续操作扫清障碍。
+    3.  **尝试符号链接**：优先尝试创建符号链接，这是最高效的方式。
+    4.  **回退到复制**：如果链接失败，则回退到复制操作（能自动区分文件和目录）。
+    5.  **最终异常捕获**：即使删除、链接和复制全部失败，也只会记录错误，不会抛出异常。
+    """
+    src_path = Path(src).resolve()
+    dst_path = Path(dst)
+
+    # 1. 健壮性检查：源路径必须存在
+    if not src_path.exists():
+        logging.error(f"源路径不存在，无法执行操作: '{src_path}'")
+        return
+
+    # 2. 关键步骤：在任何操作前，确保目标路径是干净的
+    try:
+        # os.path.islink() 或 Path.is_symlink() 可以检查路径是否为符号链接 [1, 2, 3, 4]
+        if dst_path.is_symlink() or dst_path.exists():
+            logging.info(f"目标路径 '{dst_path}' 已存在，将强制删除它。")
+            if dst_path.is_dir() and not dst_path.is_symlink():
+                shutil.rmtree(dst_path)
+            else:
+                # .unlink() 可以安全地删除文件或符号链接
+                dst_path.unlink()
+    except Exception as e:
+        logging.error(f"删除已存在的目标 '{dst_path}' 时失败，无法继续操作。错误: {e}")
+        return
+
+    # 3. 优先尝试创建符号链接
+    try:
+        # pathlib 的 symlink_to 能更好地处理跨平台目录链接 [8]
+        dst_path.symlink_to(src_path, target_is_directory=src_path.is_dir())
+        logging.info(f"成功创建符号链接: '{dst_path}' -> '{src_path}'")
+        return  # 操作成功，提前返回
+    except (AttributeError, NotImplementedError, OSError) as e:
+        logging.warning(f"创建符号链接失败 (错误: '{e}'), 将回退到复制操作。")
+
+    # 4. 如果链接失败，则回退到复制操作（最终保障）
+    try:
+        if src_path.is_dir():
+            # shutil.copytree 用于递归地复制整个目录 [6, 15]
+            shutil.copytree(src_path, dst_path)
+        else:
+            # shutil.copy2 用于复制单个文件并保留元数据 [12]
+            # 理论上父目录已存在，但为保险起见再次确认
+            dst_path.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(src_path, dst_path)
+        logging.info(f"成功将 '{src_path}' 复制到 '{dst_path}'")
+    except Exception as e:
+        # 这是最后的防线，即使复制也失败了，也只记录错误，不让程序崩溃
+        logging.error(f"最终的回退复制操作也失败了！源: '{src_path}', 目标: '{dst_path}'. 错误: {e}")
 
 def log_output_dir(out_dir):
     logging.info(colored("Output dir:", "yellow", attrs=["bold"]) + f" {out_dir}")
