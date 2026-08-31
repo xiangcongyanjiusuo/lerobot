@@ -1,0 +1,49 @@
+{
+  "chunk_size": 100,
+  "dim_feedforward": 3200,
+  "dim_model": 512,
+  "dropout": 0.1,
+  "feedforward_activation": "relu",
+  "input_normalization_modes": {
+    "observation.images.laptop": "mean_std",
+    "observation.images.phone": "mean_std",
+    "observation.state": "mean_std"
+  },
+  "input_shapes": {
+    "observation.images.laptop": [
+      3,
+      480,
+      640
+    ],
+    "observation.images.phone": [
+      3,
+      480,
+      640
+    ],
+    "observation.state": [
+      6
+    ]
+  },
+  "kl_weight": 10.0,
+  "latent_dim": 32,
+  "n_action_steps": 100,
+  "n_decoder_layers": 1,
+  "n_encoder_layers": 4,
+  "n_heads": 8,
+  "n_obs_steps": 1,
+  "n_vae_encoder_layers": 4,
+  "output_normalization_modes": {
+    "action": "mean_std"
+  },
+  "output_shapes": {
+    "action": [
+      6
+    ]
+  },
+  "pre_norm": false,
+  "pretrained_backbone_weights": "ResNet18_Weights.IMAGENET1K_V1",
+  "replace_final_stride_with_dilation": false,
+  "temporal_ensemble_coeff": null,
+  "use_vae": true,
+  "vision_backbone": "resnet18"
+}

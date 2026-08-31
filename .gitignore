@@ -1,0 +1,17 @@
+# 相机图像/视频（不传）
+data/**/videos/
+data/serve/
+camera_id_images/
+lerobot/scripts/camera_id_images/
+
+# ffmpeg 可执行文件（可重新下载，且超过 GitHub 100MB 限制）
+ffmpeg/
+
+# 旧训练输出（3月旧模型）与中间 checkpoint（体积超 LFS 配额，只保留最终模型）
+outputs/train/act_so100_test/
+outputs/train/serve/
+outputs/train/act_so100_new/checkpoints/0*/
+
+# Python 缓存
+__pycache__/
+*.pyc

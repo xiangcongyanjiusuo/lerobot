@@ -1,0 +1,2 @@
+outputs/train/act_so100_new/checkpoints/last/pretrained_model/model.safetensors filter=lfs diff=lfs merge=lfs -text
+outputs/train/act_so100_new/checkpoints/last/training_state.pth filter=lfs diff=lfs merge=lfs -text

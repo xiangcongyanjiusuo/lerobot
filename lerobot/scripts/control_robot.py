@@ -478,6 +478,12 @@ if __name__ == "__main__":
         nargs="*",
         help="Any key=value arguments to override config values (use dots for.nested=overrides)",
     )
+    parser_record.add_argument(
+        "--display-cameras",
+        type=int,
+        default=1,
+        help="Display all cameras on screen (set to 1 to display or 0).",
+    )
 
     parser_replay = subparsers.add_parser("replay", parents=[base_parser])
     parser_replay.add_argument(
