@@ -7,3 +7,4 @@ PyQt5==5.15.9
 pyqt5-tools==5.15.9.3.3
 pyyaml==6.0.2
 feetech-servo-sdk==1.0.0
+pynput
