@@ -39,7 +39,7 @@ pip install -r requirements.txt
 录制数据时 LeRobot 调用 ffmpeg 把图像帧编码成 mp4 视频。仓库不包含 ffmpeg（体积约 435MB，超出 GitHub 限制），需要自行下载：
 
 - 下载地址（Windows release 版）：https://www.gyan.dev/ffmpeg/builds/
-- 解压后把 `ffmpeg.exe`、`ffprobe.exe` 放到本项目的 `ffmpeg/bin/` 目录，或加入系统 PATH
+- 解压后把 `bin` 目录**加入系统 PATH**（代码直接调用 `ffmpeg` 命令名，不会自动搜索项目内目录），验证：终端运行 `ffmpeg -version` 有输出即成功
 
 ### 4. USB 串口驱动
 
