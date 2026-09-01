@@ -12,6 +12,10 @@ outputs/train/act_so100_test/
 outputs/train/serve/
 outputs/train/act_so100_new/checkpoints/0*/
 
+# 本地大压缩包
+ffmpeg.rar
+genkiarm.rar
+
 # Python 缓存
 __pycache__/
 *.pyc
